@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -66,6 +67,13 @@ public class MainActivity extends FlutterActivity {
             result.success("Service Running");
           else
             result.success("Service Stopped");
+        }
+        else if(methodCall.method.equals("openGit")){
+
+          // intent browser to repository
+          Intent gitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RohitRajP/netVitesse"));
+          startActivity(gitIntent);
+
         }
       }
     });

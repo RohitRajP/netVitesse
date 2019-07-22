@@ -34,6 +34,7 @@ class _MyAppState extends State<MyApp>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
+      color: Color(0xffec008c),
       title: "Net Vitesse",
       home: HomePage(),
     );

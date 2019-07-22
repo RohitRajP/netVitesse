@@ -15,7 +15,14 @@ class _HomePageState extends State<HomePage> {
   static const platform = const MethodChannel('com.a011.netvitesse');
   bool serviceStatus = false;
 
-  Widget _floatingActionButton() {
+
+  // function to open github repository
+  void openGithubPage(){
+    platform.invokeMethod('openGit');
+  }
+
+  // widget for the service activation FAB
+  Widget _serviceActivateFAB() {
     return FloatingActionButton.extended(
         onPressed: () async {
           // calling appropriate java function and getting response
@@ -25,18 +32,15 @@ class _HomePageState extends State<HomePage> {
 
           // updating UI based on response
           if (result == "Service Started") {
-
             // setting service status as Activated
             setState(() {
               serviceStatus = true;
             });
-          } else if(result == "Service Cancelled"){
-
+          } else if (result == "Service Cancelled") {
             // setting service status as Deactivated
             setState(() {
               serviceStatus = false;
             });
-
           } else if (result == "Service Failed") {
             // showing snackbar for error message
             final snackBar = SnackBar(
@@ -51,12 +55,52 @@ class _HomePageState extends State<HomePage> {
         },
         backgroundColor: (serviceStatus == false) ? Colors.green : Colors.red,
         icon: (serviceStatus == false) ? Icon(Icons.check) : Icon(Icons.cancel),
-        label: (serviceStatus == false) ? Text("Activate") : Text("Deactivate"));
+        label:
+            (serviceStatus == false) ? Text("Activate") : Text("Deactivate"));
   }
 
-  void _checkStatus() async{
+  // settings fab button
+  Widget _settingsFAB() {
+    return FloatingActionButton.extended(
+      onPressed: () {},
+      icon: Icon(Icons.settings),
+      label: Text("Settings"),
+      backgroundColor: Colors.black,
+    );
+  }
+
+  Widget _aboutFAB() {
+    return FloatingActionButton.extended(
+        onPressed: () {
+          openAboutDialog(context, openGithubPage);
+        },
+        label: Text("About"),
+        icon: Icon(Icons.info),
+        backgroundColor: Colors.indigo,
+    );
+  }
+
+  // Used to display multiple FABs
+  Widget _floatingActionButton() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        _aboutFAB(),
+        SizedBox(
+          height: 10.0,
+        ),
+//        _settingsFAB(),
+//        SizedBox(
+//          height: 10.0,
+//        ),
+        _serviceActivateFAB()
+      ],
+    );
+  }
+
+  void _checkStatus() async {
     String result = await platform.invokeMethod("checkStatus");
-    if(result == "Service Running"){
+    if (result == "Service Running") {
       setState(() {
         serviceStatus = true;
       });
@@ -64,7 +108,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void initState(){
+  void initState() {
     // TODO: implement initState
     super.initState();
 
@@ -80,7 +124,6 @@ class _HomePageState extends State<HomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: _floatingActionButton(),
         body: Container(
-          color: Colors.black,
           padding: EdgeInsets.all(20.0),
           child: Center(
             child: ListView(

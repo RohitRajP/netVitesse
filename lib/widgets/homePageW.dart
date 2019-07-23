@@ -30,7 +30,7 @@ Widget netVitesseText(context) {
 
 Widget descText(context) {
   return Text(
-    "Have you ever been frustrated wondering about your internet connection or it's speed?\n\nFear no more!",
+    "This is for all of us who are curious about our internet data usage and connectivity! \n\nNow we can: ",
     textAlign: TextAlign.center,
     style: TextStyle(
         fontStyle: FontStyle.italic,
@@ -49,18 +49,12 @@ Widget callForActionText(context) {
   );
 }
 
-Widget aboutAppBtn(context) {
-  return RaisedButton.icon(
-    icon: Icon(FontAwesomeIcons.infoCircle),
-    label: Text(
-      "About App",
-      style: TextStyle(fontSize: 18.0),
-    ),
-    color: Color(0xff7F00FF),
-    onPressed: () {},
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-    textColor: Colors.white,
-  );
+Widget aboutApp(context) {
+  return Text(
+      "⚡ Keep an eye on our daily data usage of both WiFi and LTE. \n\n⚡ Instantly measure our connection speed and verify internet connectivity",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+          fontSize: 16.0, foreground: Paint()..shader = linearGradient));
 }
 
 Widget viewCodeBtn(context) {
@@ -74,26 +68,25 @@ Widget viewCodeBtn(context) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       label: Text(
         "View Code",
-        style: TextStyle(color: Colors.white,fontSize: 16.0),
+        style: TextStyle(color: Colors.white, fontSize: 16.0),
       ));
 }
 
-Widget _appLogo(){
-  return Image.asset('assets/icon/try22.png',width: 120,height: 120);
+Widget _appLogo() {
+  return Image.asset('assets/icon/try22.png', width: 120, height: 120);
 }
 
-Widget _title(){
+Widget _title() {
   return Text(
     "NetVitesse",
     style: TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 30.0,
-
     ),
   );
 }
 
-Widget _version(){
+Widget _version() {
   return Text(
     "Version 1.0",
     style: TextStyle(
@@ -103,40 +96,44 @@ Widget _version(){
   );
 }
 
-Widget _message(){
+Widget _message() {
   return Text(
-    "A flutter and native android cocktail, NetVitesse literally spells 'Net-Speed' due to the lack of better alternatives and, my faint memories of learning french. \n\nI hope you find as much fun using this app as I had developing it.\n\nTill the next project,\nNamaskar 😁",
+    "A Flutter and native android cocktail, NetVitesse literally spells 'Net-Speed' due to the lack of better alternatives and, faint memories of learning French. \n\nI hope you find as much fun using this app as I had developing it.\n\nTill the next project,\nGotta bolt! 😁 \n\n FYI. The source code is not copyrighted, so please feel free to explore and innovate 😉",
     textAlign: TextAlign.center,
     style: TextStyle(
-        foreground: Paint()..shader = linearGradient,
-      letterSpacing: 1.5
-    ),
+        foreground: Paint()..shader = linearGradient, letterSpacing: 1.5),
   );
 }
 
-Widget _viewSourceBtn(openGithubPage){
+Widget _viewSourceBtn(openGithubPage) {
   return FlatButton.icon(
       icon: Container(
         margin: EdgeInsets.only(bottom: 3.0),
-        child: Icon(FontAwesomeIcons.github,size: 30,),
+        child: Icon(
+          FontAwesomeIcons.github,
+          size: 30,
+        ),
       ),
-      label: Text("View Source", style: TextStyle(fontSize: 16.0),),
-      onPressed: (){
+      label: Text(
+        "View Source",
+        style: TextStyle(fontSize: 16.0),
+      ),
+      onPressed: () {
         openGithubPage();
       },
       color: Colors.black,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       textColor: Colors.white,
-      colorBrightness: Brightness.dark
-  );
+      colorBrightness: Brightness.dark);
 }
 
-void openAboutDialog(context, openGithubPage){
+void openAboutDialog(context, openGithubPage) {
   showDialog(
       context: context,
       child: AlertDialog(
         backgroundColor: Color(0xFFf8f9fa),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         content: Container(
           height: 400,
           width: 300,
@@ -175,6 +172,5 @@ void openAboutDialog(context, openGithubPage){
             width: 300,
           )
         ],
-      )
-  );
+      ));
 }

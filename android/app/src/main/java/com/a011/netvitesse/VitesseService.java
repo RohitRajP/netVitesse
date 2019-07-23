@@ -7,12 +7,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.graphics.drawable.Icon;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -35,6 +42,10 @@ public class VitesseService extends Service {
     public long lastRxBytes, lastTxBytes, beforeTime, afterTime, totalSpeed;
     public static double downSpeed=0.0,upSpeed=0.0, dataUsed;
     DecimalFormat df = new DecimalFormat("#.##");
+
+    private Paint mIconSpeedPaint, mIconUnitPaint;
+    private Bitmap mIconBitmap;
+    private Canvas mIconCanvas;
 
     @Override
     public void onCreate() {
@@ -63,8 +74,11 @@ public class VitesseService extends Service {
         // notification template (converting speed into Mb/s on display
         Notification notification = new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setContentTitle(connStatus)
-                .setContentText("↑"+downSpeed/125+" Mb/s"+" ↓"+upSpeed/125+" Mb/s")
+                .setContentText("↓"+downSpeed/125+" Mb/s"+" ↑"+upSpeed/125+" Mb/s")
                 .setSmallIcon(R.drawable.ic_try2)
+                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setOngoing(true)
+                .setPriority(Notification.PRIORITY_MAX)
                 .setContentIntent(pendingIntent)
                 .setOnlyAlertOnce(true)
                 .build();

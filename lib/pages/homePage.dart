@@ -124,6 +124,7 @@ class _HomePageState extends State<HomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: _floatingActionButton(),
         body: Container(
+          margin: EdgeInsets.only(bottom: 50.0),
           padding: EdgeInsets.all(20.0),
           child: Center(
             child: ListView(
@@ -132,12 +133,14 @@ class _HomePageState extends State<HomePage> {
                 // Contains "Welcome to" text
                 Container(
                   alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width*0.8,
                   child: welcomeText(context),
                 ),
 
                 // Contains "NetVitesse" text
                 Container(
                   alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width*0.8,
                   child: netVitesseText(context),
                 ),
 
@@ -145,15 +148,17 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   padding: EdgeInsets.only(left: 20.0, right: 20.0),
                   alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width*0.8,
                   child: descText(context),
                 ),
 
                 // Contains about app button
-//                Container(
-//                  margin: EdgeInsets.only(top: 30.0),
-//                  alignment: Alignment.center,
-//                  child: aboutAppBtn(context),
-//                ),
+                Container(
+                  margin: EdgeInsets.only(top: 10.0),
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width*0.8,
+                  child: aboutApp(context),
+                ),
 
                 // Contains view code button
 //                Container(

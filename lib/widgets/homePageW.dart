@@ -51,7 +51,7 @@ Widget callForActionText(context) {
 
 Widget aboutApp(context) {
   return Text(
-      "⚡ Keep an eye on our daily data usage of both WiFi and LTE. \n\n⚡ Instantly measure our connection speed and verify internet connectivity",
+      "⚡ Keep an eye on our daily data usage for both WiFi and LTE. \n\n⚡ Instantly measure our connection speed and verify internet connectivity.",
       textAlign: TextAlign.center,
       style: TextStyle(
           fontSize: 16.0, foreground: Paint()..shader = linearGradient));
@@ -88,7 +88,7 @@ Widget _title() {
 
 Widget _version() {
   return Text(
-    "Version 1.0",
+    "Version 1.2",
     style: TextStyle(
       color: Colors.blueGrey,
       fontSize: 16.0,
@@ -98,7 +98,7 @@ Widget _version() {
 
 Widget _message() {
   return Text(
-    "A Flutter and native android cocktail, NetVitesse literally spells 'Net-Speed' due to the lack of better alternatives and, faint memories of learning French. \n\nI hope you find as much fun using this app as I had developing it.\n\nTill the next project,\nGotta bolt! 😁 \n\n FYI. The source code is not copyrighted, so please feel free to explore and innovate 😉",
+    "A Flutter and native android cocktail, NetVitesse literally spells 'Net-Speed' due to the lack of better alternatives and, faint memories of learning French. \n\nI hope you find as much fun using this app as I had developing it.\n\nTill the next project,\nGotta bolt! 😁 \n\n FYI. The source code is not copyrighted, so please feel free to explore and \ninnovate 😉",
     textAlign: TextAlign.center,
     style: TextStyle(
         foreground: Paint()..shader = linearGradient, letterSpacing: 1.5),

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -22,6 +23,7 @@ import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,13 +45,11 @@ public class VitesseService extends Service {
     public static double downSpeed=0.0,upSpeed=0.0, dataUsed;
     DecimalFormat df = new DecimalFormat("#.##");
 
-    private Paint mIconSpeedPaint, mIconUnitPaint;
-    private Bitmap mIconBitmap;
-    private Canvas mIconCanvas;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
 
         // gets the amount of packets received on service start
         lastRxBytes = TrafficStats.getTotalRxBytes();
@@ -169,11 +169,11 @@ public class VitesseService extends Service {
 
                     // if it has, then show values in Gb and change text accordingly
                     dataUsed = dataUsed/1024;
-                    return "WiFi (Today: "+df.format(dataUsed)+" GB)";
+                    return "WiFi - Today: "+df.format(dataUsed)+" GB";
                 }
 
                 // else just return MB value
-                return "WiFi (Today: "+df.format(dataUsed)+" MB)";
+                return "WiFi - Today: "+df.format(dataUsed)+" MB";
             }
             else{
                 // getting wifi data usage
@@ -187,9 +187,9 @@ public class VitesseService extends Service {
 
                     // if it has, then show values in Gb and change text accordingly
                     dataUsed = dataUsed/1024;
-                    return "Mobile Data ("+df.format(dataUsed)+" GB used)";
+                    return "Mobile Data "+df.format(dataUsed)+" GB ";
                 }
-                return "Mobile Data ("+df.format(dataUsed)+" MB used)";
+                return "Mobile Data "+df.format(dataUsed)+" MB ";
             }
         }
         else{

@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -93,6 +94,11 @@ public class MainActivity extends FlutterActivity {
 
   // starts foreground service
   public void startService(){
+    SharedPreferences prefs = this.getSharedPreferences("com.a011.netvitesse",0);
+    // getting sharedPreference value
+    long totalRXBytes = prefs.getLong("totalRXBytes",0);
+
+    Toast.makeText(this, "Total: "+totalRXBytes, Toast.LENGTH_SHORT).show();
     Intent serviceIntent = new Intent(this, VitesseService.class);
     startService(serviceIntent);
   }

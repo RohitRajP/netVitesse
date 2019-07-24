@@ -94,13 +94,44 @@ public class MainActivity extends FlutterActivity {
 
   // starts foreground service
   public void startService(){
+    // declaring a sharedPrefs instance
     SharedPreferences prefs = this.getSharedPreferences("com.a011.netvitesse",0);
-    // getting sharedPreference value
-    long totalRXBytes = prefs.getLong("totalRXBytes",0);
+    SharedPreferences.Editor editor = prefs.edit();
 
-    Toast.makeText(this, "Total: "+totalRXBytes, Toast.LENGTH_SHORT).show();
-    Intent serviceIntent = new Intent(this, VitesseService.class);
-    startService(serviceIntent);
+    // getting sharedPreference values
+    int valueReset = prefs.getInt("valueReset",-2);
+    long totalRXBytes = prefs.getLong("totalRXBytes",0);
+    long totalTXBytes = prefs.getLong("totalTXBytes",0);
+    long totalMobileTXBytes = prefs.getLong("mobileTXBytes",0);
+    long totalMobileRXBytes = prefs.getLong("mobileRXBytes",0);
+
+
+    if(valueReset == 1){
+      Intent serviceIntent = new Intent(this, VitesseService.class);
+      serviceIntent.putExtra("totalRXBytes",totalRXBytes);
+      serviceIntent.putExtra("totalTXBytes",totalTXBytes);
+      serviceIntent.putExtra("totalMobileTXBytes",totalMobileTXBytes);
+      serviceIntent.putExtra("totalMobileRXBytes",totalMobileRXBytes);
+      serviceIntent.putExtra("valueReset", valueReset);
+      editor.putInt("valueReset",-1);
+      editor.commit();
+      startService(serviceIntent);
+    }
+    else if(valueReset == -1){
+
+      Intent serviceIntent = new Intent(this, VitesseService.class);
+      serviceIntent.putExtra("totalRXBytes",prefs.getLong("currentTotalRX",0));
+      serviceIntent.putExtra("totalTXBytes",prefs.getLong("currentTotalTX",-0));
+      serviceIntent.putExtra("totalMobileRXBytes",prefs.getLong("currentMobileTotalRX",0));
+      serviceIntent.putExtra("totalMobileTXBytes",prefs.getLong("currentMobileTotalTX",0));
+      serviceIntent.putExtra("valueReset", 1);
+      startService(serviceIntent);
+    }
+    else{
+      Intent serviceIntent = new Intent(this, VitesseService.class);
+      startService(serviceIntent);
+    }
+
   }
 
   // stops foreground service

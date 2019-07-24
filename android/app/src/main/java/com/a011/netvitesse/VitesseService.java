@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,12 +45,20 @@ public class VitesseService extends Service {
     public long lastRxBytes, lastTxBytes, beforeTime, afterTime, totalSpeed;
     public static double downSpeed=0.0,upSpeed=0.0, dataUsed;
     DecimalFormat df = new DecimalFormat("#.##");
+    ShutdownBroadcastReciever sBR = new ShutdownBroadcastReciever();
+    // recovered RX, TX values from memory
+    long recTotalRXBytes=0, recTotalTXBytes=0, recTotalMobileTXBytes=0, recTotalMobileRXBytes=0;
+
 
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+
+        // Registering broadcast receiver for system shutdown
+        IntentFilter sysShutdownIntent = new IntentFilter(Intent.ACTION_SHUTDOWN);
+        registerReceiver(sBR,sysShutdownIntent);
 
         // gets the amount of packets received on service start
         lastRxBytes = TrafficStats.getTotalRxBytes();
@@ -63,7 +72,21 @@ public class VitesseService extends Service {
 
     @Override
     public void onDestroy() {
+
         super.onDestroy();
+        SharedPreferences prefs = this.getSharedPreferences("com.a011.netvitesse",0);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        Log.e("VitesseServiceDestroy", "Setting current TotalRXBytes: " +TrafficStats.getTotalRxBytes()+recTotalRXBytes);
+        Log.e("VitesseServiceDestroy", "Getting current TotalTXBytes: " +TrafficStats.getTotalTxBytes()+recTotalTXBytes);
+        Log.e("VitesseServiceDestroy", "Getting current TotalMobileRXBytes: " +TrafficStats.getMobileRxBytes()+recTotalMobileRXBytes);
+        Log.e("VitesseServiceDestroy", "Getting current TotalMobileTXBytes: " +TrafficStats.getMobileTxPackets()+recTotalMobileTXBytes);
+
+        editor.putLong("currentTotalRX",TrafficStats.getTotalRxBytes()+recTotalRXBytes);
+        editor.putLong("currentTotalTX",TrafficStats.getTotalTxBytes()+recTotalTXBytes);
+        editor.putLong("currentMobileTotalRX",TrafficStats.getMobileRxBytes()+recTotalMobileRXBytes);
+        editor.putLong("currentMobileTotalTX",TrafficStats.getMobileTxPackets()+recTotalMobileTXBytes);
+        unregisterReceiver(sBR);
     }
 
 
@@ -132,8 +155,8 @@ public class VitesseService extends Service {
     }
 
 
-    // gets information on the network currently connected to
-    public String getConnectivityStatusString(Context context) {
+    // gets information on the network currently connected to and calculates data usage
+    public String getConnectivityStatusString(Context context,long recTotalRXBytes,long recTotalTXBytes,long recTotalMobileRXBytes,long recTotalMobileTXBytes) {
 
         // creating connectivity manager class instance
         ConnectivityManager cm =
@@ -152,14 +175,11 @@ public class VitesseService extends Service {
             // check if connection is WiFi or Mobile Data
             boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
 
-            // calculate speed of connection
-            calculateSpeedPrams();
-
             // return appropriate connection details
             if(isWiFi == true){
 
                 // getting wifi data usage
-                dataUsed = TrafficStats.getTotalRxBytes() - TrafficStats.getMobileRxBytes();
+                dataUsed = (TrafficStats.getTotalRxBytes()+recTotalRXBytes) - (TrafficStats.getMobileRxBytes()+recTotalMobileRXBytes);
 
                 // converting bytes into Mb
                 dataUsed = dataUsed/(1024*1024);
@@ -177,7 +197,7 @@ public class VitesseService extends Service {
             }
             else{
                 // getting wifi data usage
-                dataUsed = TrafficStats.getMobileRxBytes();
+                dataUsed = TrafficStats.getMobileRxBytes()+recTotalMobileRXBytes;
 
                 // converting bytes into Mb
                 dataUsed = dataUsed/(1024*1024);
@@ -209,6 +229,25 @@ public class VitesseService extends Service {
         // creating initial notification
         setNotification("Setting this up...",pendingIntent);
 
+        Log.e("VitesseService", "Getting ValueReset: " +intent.getIntExtra("valueReset",-2));
+
+
+        // checking if there are intent values
+        if(intent.getIntExtra("valueReset", -1) != -1){
+
+            Log.e("VitesseService", "Getting TotalRXBytes: " +intent.getLongExtra("totalRXBytes",-1));
+            Log.e("VitesseService", "Getting TotalTXBytes: " +intent.getLongExtra("totalTXBytes",-1));
+            Log.e("VitesseService", "Getting TotalMobileRXBytes: " +intent.getLongExtra("totalMobileTXBytes",-1));
+            Log.e("VitesseService", "Getting TotalMobileTXBytes: " +intent.getLongExtra("totalMobileRXBytes",-1));
+
+            // fetching values from intent
+            recTotalRXBytes = intent.getLongExtra("totalRXBytes",-1);
+            recTotalTXBytes = intent.getLongExtra("totalTXBytes",-1);
+            recTotalMobileTXBytes = intent.getLongExtra("totalMobileTXBytes",-1);
+            recTotalMobileRXBytes = intent.getLongExtra("totalMobileRXBytes",-1);
+
+        }
+
         // starting thread to handle constant updation of notification values
         Thread t = new Thread() {
 
@@ -217,8 +256,11 @@ public class VitesseService extends Service {
                 // infinite loop
                 while (true){
 
+                    // calculate speed of connection
+                    calculateSpeedPrams();
+
                     // calling function to get connection status
-                    String connStatus = getConnectivityStatusString(getApplicationContext());
+                    String connStatus = getConnectivityStatusString(getApplicationContext(),recTotalRXBytes,recTotalTXBytes,recTotalMobileRXBytes,recTotalMobileTXBytes);
 
                     // calling function to update notification
                     setNotification(connStatus,pendingIntent);

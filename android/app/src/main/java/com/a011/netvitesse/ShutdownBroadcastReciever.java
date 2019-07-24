@@ -31,6 +31,14 @@ public class ShutdownBroadcastReciever extends BroadcastReceiver {
             editor.putLong("totalTXBytes",currentTxBytes);
             editor.putLong("mobileRXBytes",currentMobileRxBytes);
             editor.putLong("mobileTXBytes",currentMobileTxBytes);
+            editor.putInt("valueReset",1);
+
+            Log.e("ShutdownBR", "Writing TotalRXBytes: " +currentRxBytes);
+            Log.e("ShutdownBR", "Writing TotalTXBytes: " +currentTxBytes);
+            Log.e("ShutdownBR", "Writing TotalMobileRXBytes: " +currentMobileRxBytes);
+            Log.e("ShutdownBR", "Writing TotalMobileTXBytes: " +currentMobileTxBytes);
+            Log.e("ShutdownBR", "ValueReset set to 1");
+
 
             // commiting all changes
             editor.commit();

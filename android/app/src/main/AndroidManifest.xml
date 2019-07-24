@@ -34,14 +34,5 @@
             </intent-filter>
         </activity>
         <service android:name=".VitesseService"/>
-        <receiver android:name=".ShutdownBroadcastReciever">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWEROFF"/>
-                <action android:name="android.intent.action.REBOOT"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>

@@ -15,9 +15,8 @@ class _HomePageState extends State<HomePage> {
   static const platform = const MethodChannel('com.a011.netvitesse');
   bool serviceStatus = false;
 
-
   // function to open github repository
-  void openGithubPage(){
+  void openGithubPage() {
     platform.invokeMethod('openGit');
   }
 
@@ -25,33 +24,7 @@ class _HomePageState extends State<HomePage> {
   Widget _serviceActivateFAB() {
     return FloatingActionButton.extended(
         onPressed: () async {
-          // calling appropriate java function and getting response
-          String result = (serviceStatus == false)
-              ? await platform.invokeMethod("startService")
-              : await platform.invokeMethod("stopService");
-
-          // updating UI based on response
-          if (result == "Service Started") {
-            // setting service status as Activated
-            setState(() {
-              serviceStatus = true;
-            });
-          } else if (result == "Service Cancelled") {
-            // setting service status as Deactivated
-            setState(() {
-              serviceStatus = false;
-            });
-          } else if (result == "Service Failed") {
-            // showing snackbar for error message
-            final snackBar = SnackBar(
-              content: Text('Apologies. Error occured'),
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 3),
-            );
-
-            // Find the Scaffold in the widget tree and use it to show a SnackBar.
-            Scaffold.of(context).showSnackBar(snackBar);
-          }
+          _checkUsagePermission();
         },
         backgroundColor: (serviceStatus == false) ? Colors.green : Colors.red,
         icon: (serviceStatus == false) ? Icon(Icons.check) : Icon(Icons.cancel),
@@ -71,12 +44,12 @@ class _HomePageState extends State<HomePage> {
 
   Widget _aboutFAB() {
     return FloatingActionButton.extended(
-        onPressed: () {
-          openAboutDialog(context, openGithubPage);
-        },
-        label: Text("About"),
-        icon: Icon(Icons.info),
-        backgroundColor: Colors.indigo,
+      onPressed: () {
+        openAboutDialog(context, openGithubPage);
+      },
+      label: Text("About"),
+      icon: Icon(Icons.info),
+      backgroundColor: Colors.indigo,
     );
   }
 
@@ -107,6 +80,68 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // to check if usage permissions are given before starting service
+  void _checkUsagePermission() async {
+    // checking if the user has provided usage permissions
+    bool result = await platform.invokeMethod("checkUsagePermission");
+    // if true, start service
+    if (result) {
+      // calling appropriate java function and getting response
+      String result = (serviceStatus == false)
+          ? await platform.invokeMethod("startService")
+          : await platform.invokeMethod("stopService");
+      // updating UI based on response
+      if (result == "Service Started") {
+        // setting service status as Activated
+        setState(() {
+          serviceStatus = true;
+        });
+      } else if (result == "Service Cancelled") {
+        // setting service status as Deactivated
+        setState(() {
+          serviceStatus = false;
+        });
+      } else if (result == "Service Failed") {
+        // showing snackbar for error message
+        final snackBar = SnackBar(
+          content: Text('Apologies. Error occured'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        );
+
+        // Find the Scaffold in the widget tree and use it to show a SnackBar.
+        Scaffold.of(context).showSnackBar(snackBar);
+      }
+    } else {
+      _getUsagePermission();
+    }
+  }
+
+  void _getUsagePermission() {
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text("Permission Required"),
+          backgroundColor: Colors.white,
+          content: Text(
+              "NetVitesse requires usage access permission to be able to calculate your daily data usage"),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  platform.invokeMethod("getUsageAccessPermission");
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(3.0)),
+                color: Colors.green,
+                textColor: Colors.white,
+                child: Text("Proceed to permission"))
+          ],
+        ));
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -114,6 +149,7 @@ class _HomePageState extends State<HomePage> {
 
     // check current service status
     _checkStatus();
+
   }
 
   @override
@@ -133,14 +169,14 @@ class _HomePageState extends State<HomePage> {
                 // Contains "Welcome to" text
                 Container(
                   alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width*0.8,
+                  width: MediaQuery.of(context).size.width * 0.8,
                   child: welcomeText(context),
                 ),
 
                 // Contains "NetVitesse" text
                 Container(
                   alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width*0.8,
+                  width: MediaQuery.of(context).size.width * 0.8,
                   child: netVitesseText(context),
                 ),
 
@@ -148,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   padding: EdgeInsets.only(left: 20.0, right: 20.0),
                   alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width*0.8,
+                  width: MediaQuery.of(context).size.width * 0.8,
                   child: descText(context),
                 ),
 
@@ -156,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   margin: EdgeInsets.only(top: 10.0),
                   alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width*0.8,
+                  width: MediaQuery.of(context).size.width * 0.8,
                   child: aboutApp(context),
                 ),
 

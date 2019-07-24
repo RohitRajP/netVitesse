@@ -28,6 +28,7 @@ class _MyAppState extends State<MyApp>{
       statusBarColor: Colors.black,
       statusBarBrightness: Brightness.dark
     ));
+
   }
 
   @override

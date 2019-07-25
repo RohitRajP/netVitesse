@@ -82,10 +82,14 @@ class _HomePageState extends State<HomePage> {
 
   // to check if usage permissions are given before starting service
   void _checkUsagePermission() async {
+
     // checking if the user has provided usage permissions
-    bool result = await platform.invokeMethod("checkUsagePermission");
+    bool usageResult = await platform.invokeMethod("checkUsagePermission");
+
+    bool phoneStatePermission = await platform.invokeMethod("getPhoneStatePermission");
+
     // if true, start service
-    if (result) {
+    if (usageResult && phoneStatePermission) {
       // calling appropriate java function and getting response
       String result = (serviceStatus == false)
           ? await platform.invokeMethod("startService")
@@ -124,28 +128,41 @@ class _HomePageState extends State<HomePage> {
           title: Text("Permission Required"),
           backgroundColor: Colors.white,
           content: Text(
-              "NetVitesse requires usage access permission to be able to calculate your daily data usage"),
+              "NetVitesse requires usage access and telephone permissions to be able to wield it's magic. \n\nUsage Access permission is to help calculate how much data is being used with WiFi\n\nTelephone permission is used to calculate how much data is consumed with mobile data", style: TextStyle(letterSpacing: 1.5),),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
           actions: <Widget>[
-            FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  platform.invokeMethod("getUsageAccessPermission");
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(3.0)),
-                color: Colors.green,
-                textColor: Colors.white,
-                child: Text("Proceed to permission"))
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      platform.invokeMethod("getUsageAccessPermission");
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(3.0)),
+                    color: Colors.green,
+                    textColor: Colors.white,
+                    child: Text("Grant Usage Permissions"))
+              ],
+            )
           ],
         ));
+  }
+
+  void getPhonePermission() async{
+    // getting phone permission
+    bool phoneStatePermission = await platform.invokeMethod("getPhoneStatePermission");
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    // get phone permission
+    getPhonePermission();
 
     // check current service status
     _checkStatus();

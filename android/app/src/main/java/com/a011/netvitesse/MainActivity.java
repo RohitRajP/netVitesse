@@ -3,6 +3,7 @@ package com.a011.netvitesse;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.AppOpsManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.job.JobInfo;
@@ -217,6 +218,7 @@ public class MainActivity extends FlutterActivity {
                     "NetVitesse Notification",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
+            serviceChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);

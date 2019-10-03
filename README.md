@@ -1,4 +1,4 @@
-# netvitesse
+# Netvitesse
 
 Flutter application to show persistent netspeed notification in android
 
